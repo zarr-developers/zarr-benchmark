@@ -39,7 +39,3 @@ class SlowMemcpyWorkload(Workload):
         for i in range(_NUM_BATCHES):
             row_slice = slice(i * _ROWS_PER_CHUNK, (i+1) * _ROWS_PER_CHUNK)
             array.get_orthogonal_selection((row_slice, slice(0, _COLS_TOTAL)))
-    
-    @property
-    def n_repeats(self) -> int:
-        return 1
