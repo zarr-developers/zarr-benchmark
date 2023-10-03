@@ -23,6 +23,7 @@ _NUM_BATCHES: Final[int] = _ROWS_TOTAL // _ROWS_PER_CHUNK
 class SlowMemcpyDataset(Dataset):
     def prepare(self) -> None:
         array = np.zeros((_ROWS_TOTAL, _COLS_TOTAL), dtype=np.int16)
+        # Note that, by default, zarr.save uses LZ4 compression.
         zarr.save(self.path, array, mode='w', chunks=(_ROWS_PER_CHUNK, _COLS_PER_CHUNK))
 
 
