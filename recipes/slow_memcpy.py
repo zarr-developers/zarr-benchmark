@@ -13,33 +13,36 @@ import zarr
 from perfcapture.dataset import Dataset
 from perfcapture.workload import Workload
 
-_ROWS_TOTAL: Final[int] = 100_000
-_COLS_TOTAL: Final[int] = 70_000
 _ROWS_PER_CHUNK: Final[int] = 5_000
 _COLS_PER_CHUNK: Final[int] = 1_000
 
-# Each batch reads all columns, but just one chunk of rows.
-_NUM_BATCHES: Final[int] = _ROWS_TOTAL // _ROWS_PER_CHUNK
 
 class SlowMemcpyDatasetAllZeroLZ4(Dataset):
     def create(self) -> None:
-        array = _all_zero_array()
-        # Note that, by default, zarr.save uses LZ4 compression.
-        zarr.save(
-            self.path,
-            array, 
-            mode='w',
-            chunks=(_ROWS_PER_CHUNK, _COLS_PER_CHUNK))
-        
+        # The default compressor is LZ4
+        shape = (100_000, 70_000)
+        z = _zarr_open(self.path, shape=shape, compressor='default')
+        z[:] = _all_zero_array(shape)
+
 class SlowMemcpyDatasetAllZeroUncompressed(Dataset):
     def create(self) -> None:
-        array = _all_zero_array()
-        array = zarr.array(array, chunks=(_ROWS_PER_CHUNK, _COLS_PER_CHUNK), compressor=None)
-        zarr.save(self.path, array, mode='w')
+        shape = (10_000, 10_000)
+        z = _zarr_open(self.path, shape=shape, compressor=None)
+        z[:] = _all_zero_array(shape)
         
 
-def _all_zero_array() -> np.ndarray:
-    return np.zeros((_ROWS_TOTAL, _COLS_TOTAL), dtype=np.int16)
+def _all_zero_array(shape) -> np.ndarray:
+    return np.zeros(shape, dtype=np.int16)
+
+def _zarr_open(path, shape, compressor):
+    return zarr.open(
+        path,
+        mode='w',
+        shape=shape,
+        chunks=(_ROWS_PER_CHUNK, _COLS_PER_CHUNK),
+        compressor=compressor,
+        dtype=np.int16,
+    )
 
 class SlowMemcpyWorkload(Workload):
     def init_datasets(self) -> tuple[Dataset]:
@@ -50,7 +53,10 @@ class SlowMemcpyWorkload(Workload):
         
         Each batch reads all columns, but just one chunk of rows.
         """
-        array = zarr.open(dataset_path, mode='r').arr_0
-        for i in range(_NUM_BATCHES):
+        array = zarr.open(dataset_path, mode='r')
+        # Each batch reads all columns, but just one chunk of rows.    
+        num_batches = array.shape[0] // _ROWS_PER_CHUNK
+        cols_total = array.shape[1]
+        for i in range(num_batches):
             row_slice = slice(i * _ROWS_PER_CHUNK, (i+1) * _ROWS_PER_CHUNK)
-            array.get_orthogonal_selection((row_slice, slice(0, _COLS_TOTAL)))
+            array.get_orthogonal_selection((row_slice, slice(0, cols_total)))
