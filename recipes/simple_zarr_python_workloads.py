@@ -1,9 +1,4 @@
-"""Implement a minimal Dataset and Workload which shows the slow unaligned memcpy
-behavior first highlighted in the Zarr Benchmarking & Performance meeting
-on Thu 28th Sept 2023.
-
-See https://github.com/zarr-developers/zarr-benchmark/issues/5
-"""
+"""Simple Zarr Python workloads."""
 
 from pathlib import Path
 
@@ -13,7 +8,7 @@ from perfcapture.dataset import Dataset
 from perfcapture.workload import Workload
 
 
-class LoadEntireArray(Workload):
+class ZarrPythonLoadEntireArray(Workload):
     def init_datasets(self) -> tuple[Dataset, ...]:
         return (
             simple_datasets.LZ4_100_chunks(),
