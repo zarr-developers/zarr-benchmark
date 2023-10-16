@@ -16,8 +16,8 @@ def _load_sample_photo() -> np.ndarray:
 
 def _create_dataset_from_image(
     path: Path, 
-    shape: tuple[int, int]=(50_000, 10_000), 
-    chunks: tuple[int, int]=(5_000,  1_000),
+    shape: tuple[int, int] = (50_000, 10_000), 
+    chunks: tuple[int, int] | bool = (5_000,  1_000),
     **kwargs
 ) -> None:
     z = zarr.open(path, mode='w', shape=shape, chunks=chunks, **kwargs)
@@ -25,23 +25,28 @@ def _create_dataset_from_image(
     z[:] = np.resize(img, shape)
 
 
-class LZ4_100_chunks(Dataset):
+class Uncompressed_1_Chunk(Dataset):
+    def create(self) -> None:
+        _create_dataset_from_image(path=self.path, chunks=False, compressor=None)
+
+
+class LZ4_100_Chunks(Dataset):
     def create(self) -> None:
         # The default compressor is LZ4
         _create_dataset_from_image(path=self.path, compressor='default')
 
 
-class Uncompressed_100_chunks(Dataset):
+class Uncompressed_100_Chunks(Dataset):
     def create(self) -> None:
         _create_dataset_from_image(path=self.path, compressor=None)
 
 
-class LZ4_10000_chunks(Dataset):
+class LZ4_10000_Chunks(Dataset):
     def create(self) -> None:
         # The default compressor is LZ4
         _create_dataset_from_image(path=self.path, chunks=(500, 100), compressor='default')
 
 
-class Uncompressed_10000_chunks(Dataset):
+class Uncompressed_10000_Chunks(Dataset):
     def create(self) -> None:
         _create_dataset_from_image(path=self.path, chunks=(500, 100), compressor=None)
