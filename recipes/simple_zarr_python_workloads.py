@@ -25,7 +25,3 @@ class ZarrPythonLoadEntireArray(Workload):
         return MetricsForRun(
             nbytes_in_final_array=z.nbytes,
         )
-
-    @property
-    def n_repeats(self) -> int:
-        return 3
