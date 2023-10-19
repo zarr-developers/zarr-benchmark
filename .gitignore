@@ -159,4 +159,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# Entrie specific to Zarr-Benchmark:
 run_benchmarks.sh
+recipes/results.csv
