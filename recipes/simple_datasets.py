@@ -6,7 +6,8 @@ import numpy as np
 import zarr
 from perfcapture.dataset import Dataset
 
-_SHAPE: Final[tuple[int, int]] = (50_000, 10_000)
+#: The shape of the full array saved into Zarr or NPY files.
+_SHAPE: Final[tuple[int, int]] = (50_000, 20_000)
 
 
 def _load_sample_photo() -> np.ndarray:
@@ -27,9 +28,10 @@ def _create_zarr_from_image(
     path: Path, 
     shape: tuple[int, int] = _SHAPE, 
     chunks: tuple[int, int] | bool = (5_000,  1_000),
+    dtype: np.dtype = np.uint8,
     **kwargs
 ) -> None:
-    z = zarr.open(path, mode='w', shape=shape, chunks=chunks, **kwargs)
+    z = zarr.open(path, mode='w', shape=shape, chunks=chunks, dtype=dtype, **kwargs)
     z[:] = _load_sample_image_and_resize(shape=shape)
 
 

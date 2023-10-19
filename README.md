@@ -13,6 +13,6 @@ This code does not run yet.
 # Usage
 
 1. Install [`perfcapture`](https://github.com/zarr-developers/perfcapture).
-2. `pip install zarr`
+2. `pip install zarr tensorstore`
 3. Clone the `zarr-benchmark` GitHub repository.
 4. Run `perfcapture/scripts/cli.py` with `--recipe-path` set to your `zarr-benchmark/recipes` path.
