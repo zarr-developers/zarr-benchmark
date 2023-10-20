@@ -40,24 +40,24 @@ class Uncompressed_1_Chunk(Dataset):
         _create_zarr_from_image(path=self.path, chunks=False, compressor=None)
 
 
-class LZ4_100_Chunks(Dataset):
+class LZ4_200_Chunks(Dataset):
     def create(self) -> None:
         # The default compressor is LZ4
         _create_zarr_from_image(path=self.path, compressor='default')
 
 
-class Uncompressed_100_Chunks(Dataset):
+class Uncompressed_200_Chunks(Dataset):
     def create(self) -> None:
         _create_zarr_from_image(path=self.path, compressor=None)
 
 
-class LZ4_10000_Chunks(Dataset):
+class LZ4_20000_Chunks(Dataset):
     def create(self) -> None:
         # The default compressor is LZ4
         _create_zarr_from_image(path=self.path, chunks=(500, 100), compressor='default')
 
 
-class Uncompressed_10000_Chunks(Dataset):
+class Uncompressed_20000_Chunks(Dataset):
     def create(self) -> None:
         _create_zarr_from_image(path=self.path, chunks=(500, 100), compressor=None)
 

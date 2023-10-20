@@ -13,10 +13,10 @@ class ZarrPythonLoadEntireArray(Workload):
     def init_datasets(self) -> tuple[Dataset, ...]:
         return (
             simple_datasets.Uncompressed_1_Chunk(),
-            simple_datasets.LZ4_100_Chunks(),
-            simple_datasets.Uncompressed_100_Chunks(),
-            simple_datasets.LZ4_10000_Chunks(),
-            simple_datasets.Uncompressed_10000_Chunks(),
+            simple_datasets.LZ4_200_Chunks(),
+            simple_datasets.Uncompressed_200_Chunks(),
+            simple_datasets.LZ4_20000_Chunks(),
+            simple_datasets.Uncompressed_20000_Chunks(),
             )
 
     def run(self, dataset_path: Path) -> MetricsForRun:
